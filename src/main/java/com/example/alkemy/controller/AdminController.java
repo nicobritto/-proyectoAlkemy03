@@ -37,7 +37,7 @@ public class AdminController {
     ModelAndView index(@PageableDefault(sort = "titulo", size = 5) Pageable pageable) {
         Page<Pelicula> peliculas = peliculaRepository.findAll(pageable);
 
-        return new ModelAndView("index")
+        return new ModelAndView("admin/index")
                 .addObject("peliculas", peliculas);
     }
 

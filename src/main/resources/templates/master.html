@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html 
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:th="http://www.thymeleaf.org">
     <head>
 
         <title>CineTrailer</title>
@@ -29,7 +31,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/">Inicio</a>
+                            <a class="nav-link" aria-current="page" href="/">Inicio</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/peliculas">Peliculas</a>
@@ -42,36 +44,7 @@
                 </div>
             </div>
         </nav>
-        <div class="container my-5">
-            <h2>Peliculas</h2>
-            
-            <div class="text-end">
-                <a href="/admin/peliculas/nuevo" class="btn btn-primary">Nueva pelicula</a>
-            </div>
-            
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Pelicula</th>
-                        <th>Fec. Estreno</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="pelicula : ${peliculas}" th:object="${pelicula}">
-                        <td></td>
-                           <td th:text="*{titulo}"></td>
-                            <p th:text="*{sinopsis}"></p>
-                        <span th:each="genero : *{generos}" 
-                              th:text="${genero.titulo}"></span>
-                        <td th:text="*{#temporals.format(fechaEstreno,'dd/MM/yyyy')}"></td>
-                        <td ></td>
-                </tr>
-                </tbody>
-
-            </table>
-
+        <div layout:fragment="content" class="container my-5">
         </div>
 
         <script
