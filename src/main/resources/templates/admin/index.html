@@ -28,13 +28,21 @@
                 </thead>
                 <tbody>
                     <tr th:each="pelicula : ${peliculas}" th:object="${pelicula}">
-                        <td></td>
+                        <td style="width: 150px;">
+                            <a th:href="@{/assets/{filename}(filename=*{rutaPortada})}" data-fancybox>
+                                <img th:src="@{/assets/{filename}(filename=*{rutaPortada})}"
+                                     alt=""
+                                     class="img-thumbnail w-100"> 
+                            </a>
+                        </td>
                            <td th:text="*{titulo}"></td>
                             <p th:text="*{sinopsis}"></p>
                         <span th:each="genero : *{generos}" 
                               th:text="${genero.titulo}"></span>
                         <td th:text="*{#temporals.format(fechaEstreno,'dd/MM/yyyy')}"></td>
-                        <td ></td>
+                        <td class="text-end"> 
+                            <a th:href="@{/admin/peliculas/{id}/editar(id=*{id})}">Editar</a>
+                        </td>
                 </tr>
                 </tbody>
 
