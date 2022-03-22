@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -70,15 +69,50 @@ public class AdminController {
         peliculaRepository.save(pelicula);
         return new ModelAndView("redirect:/admin");
     }
-    
+
     @GetMapping("/peliculas/{id}/editar")
-    ModelAndView editarPelicula(@PathVariable Integer id){
-        Pelicula pelicula=peliculaRepository.getOne(id);
-        List<Genero>generos=generoRepository.findAll(Sort.by("titulo"));
-        
+    ModelAndView editarPelicula(@PathVariable Integer id) {
+        Pelicula pelicula = peliculaRepository.getOne(id);
+        List<Genero> generos = generoRepository.findAll(Sort.by("titulo"));
+
         return new ModelAndView("admin/editar-pelicula")
-                .addObject("pelicula",pelicula)
-                .addObject("generos",generos);
+                .addObject("pelicula", pelicula)
+                .addObject("generos", generos);
+    }
+
+    @PostMapping("/peliculas/{id}/editar")
+    ModelAndView actualizarPelicula(@PathVariable Integer id,
+            @Validated Pelicula pelicula, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<Genero> generos = generoRepository.findAll(Sort.by("titulo"));
+            return new ModelAndView("admin/editar-pelicula")
+                    .addObject("pelicula", pelicula)
+                    .addObject("generos", generos);
+        }
+        Pelicula peliculaFromDb = peliculaRepository.getOne(id);
+        peliculaFromDb.setTitulo(pelicula.getTitulo());
+        peliculaFromDb.setSinopsis(pelicula.getSinopsis());
+        peliculaFromDb.setFechaEstreno(pelicula.getFechaEstreno());
+        peliculaFromDb.setYoutubeTrailerId(pelicula.getYoutubeTrailerId());
+        peliculaFromDb.setGeneros(pelicula.getGeneros());
+
+        if (!pelicula.getPortada().isEmpty()) {
+            fileSystemStorageService.delete(peliculaFromDb.getRutaPortada());
+            String rutaPortada = fileSystemStorageService.storage(pelicula.getPortada());
+            peliculaFromDb.setRutaPortada(rutaPortada);
+        }
+        
+        peliculaRepository.save(peliculaFromDb);
+        return new ModelAndView("redirect:/admin");
+
+    }
+    
+    @PostMapping("/peliculas/{id}/eliminar")
+    String eliminarPelicula(@PathVariable Integer id ){
+        Pelicula pelicula=peliculaRepository.getOne(id);
+        peliculaRepository.delete(pelicula);
+        fileSystemStorageService.delete(pelicula.getRutaPortada());
+        return "redirect:/admin";
     }
 
 }
